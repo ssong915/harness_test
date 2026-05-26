@@ -21,7 +21,7 @@
       "status": "done",
       "depends_on": [],
       "e2e_verified": true,
-      "evidence": { "commit": "<pending>", "test_file": "router.test.mjs", "branch": "feat/F-002" },
+      "evidence": { "commit": "87cf0d0", "test_file": "router.test.mjs", "branch": "feat/F-002" },
       "notes": "router.js + router.test.mjs (9/9 PASS). 모듈 e2e는 F-003+F-004 done 시점으로 보류 (verification.json#modules.router 참조)."
     },
     {
