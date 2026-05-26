@@ -1,0 +1,24 @@
+{
+  "eval_cases": [
+    {
+      "query": "오늘은 여기까지, 정리하고 끝내자",
+      "should_trigger": true,
+      "expected_behavior": "clean-state-checklist 점검, scratch 삭제, handoff 갱신, 관측 메모, (완료 시) 브랜치 머지·삭제."
+    },
+    {
+      "query": "세션 종료해줘",
+      "should_trigger": true,
+      "expected_behavior": "Clean Gate 점검. 미충족 항목이 있으면 처리 전엔 종료로 보고하지 않음."
+    },
+    {
+      "query": "그냥 바로 닫아, 기록은 됐어",
+      "should_trigger": true,
+      "expected_behavior": "clean-state 생략 금지. 최소한 handoff가 다음 세션을 이어받게 하고 작업트리를 정리한 뒤 종료."
+    },
+    {
+      "query": "방금 기능 검증 통과했어 기록부터 해",
+      "should_trigger": false,
+      "expected_behavior": "라우팅 → harness-record (P5) 먼저."
+    }
+  ]
+}

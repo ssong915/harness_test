@@ -1,0 +1,29 @@
+{
+  "_comment": "보유 자산 레지스트리 [L-I1]. 이미 가진 실물(도커 이미지·레포·서비스·API)을 등록해, 에이전트가 '새로 만들지 말고 이걸 써라'를 따르게 한다. SEED.md의 고유명은 여기와 대조한다. 이름만 같은 커스텀 구현을 막는 정체성 계약의 근거.",
+  "assets": [
+    {
+      "id": "hermes-mockup",
+      "name": "HERMES accident-response demo mockup",
+      "kind": "html-asset",
+      "ref": "accident-response-demo-mockup.html",
+      "use": "브라우저에서 직접 열어 사용. 이번 세션의 확장 대상 파일이다 (in-place 확장 또는 동일 폴더 내 후속 버전 파일로).",
+      "do_not": "이름만 같은 'HERMES'를 별도 파일로 새로 만들지 말 것. 기존 mockup의 사고 응대 8단계와 UI 컴포넌트(Alert/List/Alert with list)를 그대로 재사용한다."
+    },
+    {
+      "id": "hermes-accident-pipeline",
+      "name": "accident-response-pipeline (HERMES 내장 skill)",
+      "kind": "skill-logic",
+      "ref": "accident-response-demo-mockup.html#accident-response-pipeline",
+      "use": "mockup HTML 내부에 정의된 사고 8단계 진행 로직. 재사용 — 재구현 금지.",
+      "do_not": "동일 책임의 별도 함수를 따로 만들지 말 것. 트러블 파이프라인은 명시적으로 다른 skill 이름(car-trouble-pipeline)으로 분리한다."
+    },
+    {
+      "id": "hermes-ui-router",
+      "name": "accident-ui-router (HERMES 내장 skill)",
+      "kind": "skill-logic",
+      "ref": "accident-response-demo-mockup.html#accident-ui-router",
+      "use": "mockup HTML 내부의 진입 라우팅 로직. 이번 세션에서 사고 외 분기까지 처리하도록 책임을 확장한다.",
+      "do_not": "동명의 새 라우터를 따로 만들지 말 것. 기존 router를 확장한다."
+    }
+  ]
+}

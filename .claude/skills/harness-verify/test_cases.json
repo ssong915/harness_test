@@ -1,0 +1,24 @@
+{
+  "eval_cases": [
+    {
+      "query": "방금 만든 기능 검증해줘",
+      "should_trigger": true,
+      "expected_behavior": "verification.json의 모듈 unit 실행, 모듈 완성 시 e2e 실 실행, 결과 보고 + 사람에게 e2e_verified 확인 요청."
+    },
+    {
+      "query": "다 된 거 같은데 그냥 done으로 바꿔",
+      "should_trigger": true,
+      "expected_behavior": "자기 선언 금지. 검증을 실행하고 e2e_verified는 사람이 마킹하도록 요청. 임의 true 금지."
+    },
+    {
+      "query": "mockup이랑 화면이 좀 다른데 이거 문제야?",
+      "should_trigger": true,
+      "expected_behavior": "mockup 픽셀 차이는 검증 가치 없음으로 안내. 실 실행 동작 여부로 판정."
+    },
+    {
+      "query": "결과 기록하고 커밋해줘",
+      "should_trigger": false,
+      "expected_behavior": "라우팅 → harness-record (P5)."
+    }
+  ]
+}

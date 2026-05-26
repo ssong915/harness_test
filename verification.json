@@ -1,0 +1,66 @@
+{
+  "_comment": "검증 기준 [L-V2]. feature-list.json과 분리(관심사 분리). 기능 단위는 unit, 모듈 단위는 완성 타이밍에 한 번에 e2e. '매 세션 검증' 부담을 없앤다.",
+  "system": {
+    "_comment": "전체 시스템 차원의 검증 기준. happy-path 3종이 실제 브라우저에서 끝까지 동작해야 한다 [L-V2].",
+    "criteria": [
+      "브라우저에서 accident-response-demo-mockup.html(또는 후속 버전 파일)을 열면 의존성 설치 없이 즉시 로드된다.",
+      "채팅에 '사고났어' 입력 → 사고 응대 8단계가 끝까지 진행된다 (사고 시나리오 회귀 없음).",
+      "채팅에 '시동이 안 걸려' 입력 → 차량 트러블 5단계가 끝까지 진행되고, 카센터 추천 화면에 dummy JSON의 항목 3개 이상이 노출된다.",
+      "채팅에 '도와줘' 입력 → Alert with list 분기 질문이 뜨고, 사용자 선택에 따라 두 흐름 중 하나로 진입한다.",
+      "각 흐름 진행 중 라우팅 배지/라벨(accident / trouble / ambiguous→accident 등)이 화면에 보인다.",
+      "UI는 Alert / List / Alert with list 3종 외 다른 컴포넌트를 새로 도입하지 않는다 (코드 검토로 확인)."
+    ]
+  },
+  "modules": [
+    {
+      "module": "data",
+      "unit": "node -e \"const c=require('./carcenters.json'); const h=require('./hospitals.json'); for(const d of Object.keys(c)) if(c[d].length<3) throw new Error('카센터<'+d); for(const d of Object.keys(h)) if(h[d].length<3) throw new Error('병원<'+d); console.log('OK')\"",
+      "e2e": {
+        "when": "F-001 done 시점",
+        "scenario": [
+          "carcenters.json + hospitals.json 모두 valid JSON이고, 각 구마다 3개 이상의 항목이 존재.",
+          "각 항목에 이름·평점·전화번호·주소·gps(lat/lng) 필드가 모두 있다."
+        ],
+        "verified_by_human": false
+      }
+    },
+    {
+      "module": "router",
+      "unit": "브라우저 콘솔에서 router.classify(input) 호출 — 입력별 결과를 수동 확인. 자동화는 없음(단일 HTML 데모 제약).",
+      "e2e": {
+        "when": "F-002, F-003, F-004 모두 done 시점",
+        "scenario": [
+          "입력 '사고났어' → classify → 'accident' 배지 표시 후 사고 흐름 진입.",
+          "입력 '타이어 펑크' → classify → 'trouble' 배지 표시 후 트러블 흐름 진입.",
+          "입력 '도와줘' → classify → 'ambiguous' 배지 + Alert with list 분기 질문 노출 → 사용자 선택에 따라 사고/트러블 흐름 중 하나로 라우팅."
+        ],
+        "verified_by_human": false
+      }
+    },
+    {
+      "module": "accident-flow",
+      "unit": "브라우저에서 사고 응대 8단계를 수동 진행. 기존 mockup과 동일한 단계 노출.",
+      "e2e": {
+        "when": "F-005 done 시점",
+        "scenario": [
+          "기존 accident-response-demo-mockup.html에서 보였던 8단계(사고 감지→안전 확보→긴급 신고 판단→사용자 정보 확인→보험사 연락→사진 촬영→주변 추천→후속 조치)가 회귀 없이 그대로 진행된다.",
+          "라우팅이 사고 분기로 들어왔을 때만 이 8단계가 시작된다."
+        ],
+        "verified_by_human": false
+      }
+    },
+    {
+      "module": "trouble-flow",
+      "unit": "브라우저에서 트러블 5단계를 수동 진행. 카센터 추천에 JSON 항목 3개 이상.",
+      "e2e": {
+        "when": "F-006, F-007 모두 done 시점",
+        "scenario": [
+          "트러블 흐름이 1)트러블 감지 2)안전확보 3)보험사 견인 연결 4)주변 카센터 추천 5)후속조치 5단계를 순서대로 노출한다.",
+          "4단계에서 carcenters.json의 항목이 최소 3개 노출되고, 각 항목에 이름·평점·전화번호가 보인다.",
+          "UI 컴포넌트는 Alert / List / Alert with list 3종만 사용."
+        ],
+        "verified_by_human": false
+      }
+    }
+  ]
+}

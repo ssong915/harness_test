@@ -1,0 +1,24 @@
+{
+  "eval_cases": [
+    {
+      "query": "검증 통과했어, 기록하고 커밋해줘",
+      "should_trigger": true,
+      "expected_behavior": "feature-list status+evidence 갱신, progress 체크포인트, 옛/중복 정리, prefix 규칙으로 커밋."
+    },
+    {
+      "query": "이 기능 done으로 바꾸고 진행상황 남겨",
+      "should_trigger": true,
+      "expected_behavior": "e2e_verified 사람 확인값을 반영해 status 갱신 + progress 기록. 미확인이면 P4로."
+    },
+    {
+      "query": "상태 추적용 파일 하나 새로 만들어서 거기도 적어두자",
+      "should_trigger": true,
+      "expected_behavior": "중복 추적 파일 생성 거부(단일 진실 원칙). feature-list.json 하나만 유지."
+    },
+    {
+      "query": "아직 검증 안 했는데 일단 done 처리해",
+      "should_trigger": false,
+      "expected_behavior": "라우팅 → harness-verify. 검증 전 확정 기록 금지."
+    }
+  ]
+}

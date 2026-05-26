@@ -1,0 +1,24 @@
+{
+  "eval_cases": [
+    {
+      "query": "/harness (AGENTS.md + feature-list.json 있는 repo에서 세션 시작)",
+      "should_trigger": true,
+      "expected_behavior": "P0(harness-bootstrap)부터 phase 루프 구동, 게이트 점검하며 서브스킬 위임."
+    },
+    {
+      "query": "이 프로젝트 하네스로 한 사이클 돌려줘",
+      "should_trigger": true,
+      "expected_behavior": "bootstrap→intent(socrates)→feature→develop→verify→record→close 순서로 오케스트레이션."
+    },
+    {
+      "query": "이 모호한 요청을 Seed로 닫기만 해줘",
+      "should_trigger": false,
+      "expected_behavior": "라우팅 → socrates (intent만 필요, 전체 라이프사이클 아님)."
+    },
+    {
+      "query": "AGENTS.md도 feature-list.json도 없는 빈 repo야",
+      "should_trigger": false,
+      "expected_behavior": "하네스 repo 아님 → scripts/init.sh 안내 후 셋업부터."
+    }
+  ]
+}

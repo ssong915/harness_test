@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Harness Engineering v2 — 의도와 실행을 닫는다</title>
+<style>
+:root{
+  --paper:#f7f4ed;
+  --ink:#171717;
+  --accent:#2864d8;
+  --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  --mono:"SF Mono","Apple SD Gothic Neo",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{overflow:hidden}
+.deck{width:100vw;height:100vh;position:relative}
+.slide{position:absolute;inset:0;display:grid;grid-template-rows:auto 1fr auto;padding:54px 68px 44px;opacity:0;pointer-events:none;transform:translateX(18px);transition:opacity .22s ease,transform .22s ease}
+.slide.active{opacity:1;pointer-events:auto;transform:translateX(0)}
+.slide::before{content:"";position:absolute;left:68px;right:68px;top:96px;height:1px;background:color-mix(in srgb,var(--ink) 22%,transparent)}
+.top,.foot,.kicker,.tag,.time,.code,.pill{font-family:var(--mono)}
+.top,.foot{display:flex;justify-content:space-between;gap:24px;color:color-mix(in srgb,var(--ink) 58%,transparent);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.foot{align-items:flex-end}
+main{display:flex;flex-direction:column;justify-content:center;min-height:0}
+h1,h2,h3,p{margin:0;letter-spacing:0}
+h1{max-width:1120px;font-size:92px;line-height:1.02;font-weight:800}
+h2{max-width:1080px;font-size:58px;line-height:1.08;font-weight:800}
+h3{font-size:29px;line-height:1.22}
+.accent{color:var(--accent)}
+.kicker{margin-bottom:22px;color:var(--accent);font-size:14px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.lead{margin-top:30px;max-width:940px;color:color-mix(in srgb,var(--ink) 68%,transparent);font-size:29px;line-height:1.45;font-weight:520}
+.small{margin-top:22px;color:color-mix(in srgb,var(--ink) 58%,transparent);font-size:20px;line-height:1.5}
+.grid{display:grid;gap:20px;margin-top:36px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);background:var(--paper);border-radius:8px;padding:24px}
+.card h3{margin-bottom:12px}
+.card p,.card li{font-size:20px;line-height:1.52;color:color-mix(in srgb,var(--ink) 70%,transparent)}
+.qna{gap:14px;margin-top:28px}
+.qna .card{padding:18px 20px}
+.qna .card h3{font-size:21px;line-height:1.25;margin-bottom:8px}
+.qna .card p{font-size:16px;line-height:1.42}
+.qna .card .answer{margin-top:8px;color:var(--accent);font-family:var(--mono);font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+ul{margin:14px 0 0;padding-left:1.1em}
+li+li{margin-top:8px}
+.split{display:grid;grid-template-columns:1.02fr .98fr;gap:42px;align-items:center}
+.diagram{border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);border-radius:8px;padding:22px;background:var(--paper)}
+.flow{display:grid;gap:9px}
+.node{border:1px solid var(--ink);border-radius:8px;padding:13px 18px;font-size:21px;font-weight:760;background:var(--paper)}
+.node span{display:block;margin-top:6px;color:color-mix(in srgb,var(--ink) 62%,transparent);font-size:15px;font-family:var(--mono);font-weight:500}
+.arrow{font-family:var(--mono);color:var(--accent);font-size:20px;padding-left:18px}
+.time{display:inline-flex;width:max-content;margin-top:24px;border:1px solid var(--accent);border-radius:999px;padding:8px 12px;color:var(--accent);font-size:13px;letter-spacing:.08em}
+.table{display:grid;grid-template-columns:220px 1fr;gap:0;margin-top:34px;border-top:1px solid var(--ink)}
+.table div{padding:16px 14px;border-bottom:1px solid color-mix(in srgb,var(--ink) 20%,transparent);font-size:20px;line-height:1.45}
+.table .key{font-weight:780;color:var(--accent);font-family:var(--mono);font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+.quote{font-size:54px;line-height:1.2;font-weight:780;max-width:1040px}
+.quote+.lead{font-size:24px}
+.code{white-space:pre-wrap;background:var(--ink);color:var(--paper);border-radius:8px;padding:24px;font-size:17px;line-height:1.55}
+/* --- speaker / profile slide (optional) --- */
+.profile{display:grid;grid-template-columns:330px 1fr;gap:44px;align-items:center}
+.portrait{width:300px;height:300px;border-radius:8px;object-fit:cover;border:1px solid color-mix(in srgb,var(--ink) 18%,transparent)}
+.duo{display:flex;gap:18px;margin-top:32px}
+.duo-card{width:176px}
+.duo-card img{width:176px;height:176px;display:block;object-fit:cover;border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);border-radius:8px;filter:grayscale(1)}
+.duo-card span{display:block;margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);text-align:center}
+.qr-row{display:flex;gap:18px;margin-top:26px}
+.qr{width:138px;height:138px;border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);border-radius:8px;padding:8px;background:var(--paper)}
+.qr-item{display:flex;flex-direction:column;gap:8px;align-items:center}
+.qr-label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.achievement-list{display:grid;gap:10px;margin-top:26px}
+.achievement-list div{border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);border-radius:8px;padding:13px 16px;font-size:19px;line-height:1.35;background:var(--paper)}
+.achievement-list strong{display:block;margin-bottom:3px;color:var(--accent);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.badge-line{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:22px}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--accent);border-radius:999px;padding:7px 11px;color:var(--accent);font-size:12px;letter-spacing:.07em;text-transform:uppercase;margin-bottom:16px}
+/* --- shared: rich editorial slides (lede, cols, skill-card, compare-grid, SVG diagram) --- */
+.shared main{justify-content:center;padding-top:0}
+.shared h2{font-size:50px;line-height:1.08;max-width:1160px}
+.shared .lede{font-size:23px;line-height:1.45;max-width:1080px;margin-top:20px;color:color-mix(in srgb,var(--ink) 70%,transparent);font-style:italic}
+.shared p{font-size:18px;line-height:1.62;max-width:980px;color:color-mix(in srgb,var(--ink) 72%,transparent)}
+.shared p+p{margin-top:12px}
+.shared .aside{margin-top:18px;color:var(--accent);font-size:17px;font-family:var(--mono);letter-spacing:.02em}
+.shared .diagram{margin-top:20px;display:flex;justify-content:center;max-height:360px;overflow:hidden}
+.shared .diagram svg{width:100%;max-height:320px;height:auto}
+.shared .skill-card{border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);border-radius:8px;background:var(--paper);padding:20px 24px;margin-top:24px;max-width:1120px}
+.shared .skill-card .name{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.shared .skill-card .role{font-size:24px;font-weight:760;margin-bottom:10px}
+.shared .skill-card .desc{font-size:17px;line-height:1.55;color:color-mix(in srgb,var(--ink) 72%,transparent);margin-bottom:14px}
+.shared .skill-card .flow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;border-top:1px solid color-mix(in srgb,var(--ink) 16%,transparent);padding-top:14px;font-family:var(--mono);font-size:12px;color:color-mix(in srgb,var(--ink) 64%,transparent)}
+.shared .skill-card .flow .pill{margin:0;border-color:color-mix(in srgb,var(--ink) 22%,transparent);color:var(--ink);border-radius:6px}
+.shared .skill-card .flow .pill.out{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.shared .skill-card .flow .arr{color:var(--accent)}
+.shared .cols{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;margin-top:24px}
+.shared .cols.narrow{grid-template-columns:.85fr 1.15fr}
+.shared .cols.flip{grid-template-columns:1.1fr .9fr}
+.shared .dim{color:color-mix(in srgb,var(--ink) 46%,transparent)}
+.shared .compare-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:28px;align-items:stretch;margin-top:26px;max-width:1140px}
+.shared .compare-cell{border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);border-radius:8px;background:var(--paper);padding:22px 24px}
+.shared .compare-cell .head{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.shared .compare-cell .row{display:flex;justify-content:space-between;align-items:baseline;gap:18px;padding:8px 0;border-bottom:1px dashed color-mix(in srgb,var(--ink) 18%,transparent)}
+.shared .compare-cell .row:last-child{border-bottom:none}
+.shared .compare-cell .k{font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:color-mix(in srgb,var(--ink) 62%,transparent);white-space:nowrap}
+.shared .compare-cell .v{font-size:18px;line-height:1.35;color:var(--ink);text-align:right}
+.shared .cmp-arrow{align-self:center;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,var(--ink) 62%,transparent)}
+.shared .cmp-arrow .score{display:block;margin-top:8px;font-size:36px;line-height:1;color:var(--ink);letter-spacing:0;font-weight:800}
+.shared .cmp-arrow .verdict{display:block;margin-top:8px;font-size:12px;color:var(--accent);font-weight:800}
+.shared.closing main{justify-content:center;text-align:center}
+.shared.closing h2{max-width:none;font-size:52px}
+.progress{position:fixed;left:0;bottom:0;height:4px;background:var(--accent);width:0;z-index:20;transition:width .16s ease}
+.nav{position:fixed;right:18px;bottom:16px;z-index:30;display:none;gap:8px}
+.nav button{font-family:var(--mono);border:1px solid color-mix(in srgb,var(--ink) 25%,transparent);background:var(--paper);color:var(--ink);border-radius:6px;padding:8px 10px;cursor:pointer}
+.nav button:hover{border-color:var(--accent);color:var(--accent)}
+@media print{body{overflow:visible}.deck{height:auto}.slide{position:relative;opacity:1;page-break-after:always;transform:none;height:720px}.nav,.progress{display:none}}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+  <section class="slide active">
+    <div class="top"><span>Harness Engineering</span><span>v2 · Concept</span></div>
+    <main>
+      <div class="kicker">확률적 AI를 결정론적 시스템으로 제어하는 방법</div>
+      <h1>의도와 실행을<br><span class="accent">닫는다</span></h1>
+      <p class="lead">모호한 요청 → Seed(실행 계약) → 검증된 산출물. 모델 둘레에 "무엇을·언제·어디서·어떻게"를 고정하는 시스템.</p>
+      <div class="time">Part 1 의도 · Part 2 실행</div>
+    </main>
+    <div class="foot"><span>Intent + Execution</span><span>01</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Premise</span><span>핵심 명제</span></div>
+    <main>
+      <div class="quote">Context는 <span class="accent">Contract</span>가 아니다.</div>
+      <p class="lead">배경 문서 주입은 첫 답만 좋게 하고, 실행 중의 선택은 모델 해석에 남긴다. 검증 가능한 계약(Contract)만이 결과를 고정한다. 진짜 비용은 성능이 아니라 감시 비용이다.</p>
+    </main>
+    <div class="foot"><span>Context is not contract</span><span>02</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Why harness</span><span>강한 모델만으론 부족</span></div>
+    <main>
+      <h2>왜 하네스가 필요한가</h2>
+      <div class="grid three">
+        <div class="card"><h3>모델은 ghost다</h3><p>세계와 부딪혀 배운 게 아니라 텍스트 패턴을 모방. 그럴듯한 답은 만들지만 일이 됐는지는 스스로 보장 못 한다.</p></div>
+        <div class="card"><h3>커져도 안 사라진다</h3><p>Bitter Lesson이 맞아도, 그 방법이 실제 일을 끝내려면 여전히 런타임(하네스)이 받쳐줘야 한다.</p></div>
+        <div class="card"><h3>20분 vs 6시간</h3><p>같은 Opus가 하네스 없으면 20분에 무너지고, 있으면 6시간 작업을 완수한다. (Anthropic)</p></div>
+      </div>
+      <p class="small">진짜 비용은 성능이 아니라 <strong>감시 비용</strong> — 사람이 매번 결과를 봐야 하면 위임이 아니다.</p>
+    </main>
+    <div class="foot"><span>Supervision cost</span><span>03</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Architecture</span><span>앞단 → 뒷단</span></div>
+    <main class="split">
+      <div>
+        <h2>같은 파이프라인의<br><span class="accent">두 부분</span></h2>
+        <p class="lead">Part 1이 없으면 Part 2가 잘못된 목표를 완벽하게 실행하고, Part 2가 없으면 Part 1의 좋은 계약이 실행 중 흐트러진다.</p>
+      </div>
+      <div class="diagram">
+        <div class="flow">
+          <div class="node">사람의 모호한 요청<span>same word, different ontology</span></div>
+          <div class="arrow">↓ Part 1 · 의도를 닫는다</div>
+          <div class="node">Seed (실행 계약)<span>goal · constraints · acceptance_criteria</span></div>
+          <div class="arrow">↓ Part 2 · 실행을 닫는다</div>
+          <div class="node">검증된 산출물<span>사람은 마지막에 리뷰만</span></div>
+        </div>
+      </div>
+    </main>
+    <div class="foot"><span>Intent then execution</span><span>04</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Part 1</span><span>Intent Layer</span></div>
+    <main>
+      <div class="kicker">Part 1 · 의도를 닫는다</div>
+      <h2>질문이 곧 <span class="accent">제어면</span>이다</h2>
+      <p class="lead">"무엇을 시킬지"를 실행 전에 질문으로 좁혀, goal·constraints·acceptance_criteria 세 칸을 채운 Seed로 만든다.</p>
+    </main>
+    <div class="foot"><span>Close the intent first</span><span>05</span></div>
+  </section>
+
+  <section class="slide shared">
+    <div class="top"><span>Shared Meaning</span><span>Premise</span></div>
+    <main>
+      <h2 class="heading">같은 단어를 써도,<br>서로 다른 영역을 본다.</h2>
+        <p class="lede">"성과"라는 한 단어 안에 매출, 학습 속도, 팀 분위기, 출시 속도, 채용 성공률이 다 들어 있다. 단어 자체는 이 영역을 통째로 가리킨다.</p>
+        <p>그래서 한 명은 매출을, 모델은 학습 속도와 팀 분위기를 떠올린다. 같은 단어를 쓰지만 본 것이 다르다 — 협업의 어긋남은 거의 여기서 시작된다.</p>
+        <p class="aside">하네스의 앞단은 그 단어가 어디까지 가리키고 어디부터는 아닌지를 함께 닫는 일이다.</p>
+
+        <div class="diagram">
+          <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg">
+            <text x="120" y="38" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#5a5a56" letter-spacing="0.22em">HUMAN</text>
+            <circle cx="120" cy="150" r="78" fill="none" stroke="#111" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <text x="120" y="130" text-anchor="middle" font-family="Iowan Old Style, Georgia, serif" font-size="13" fill="#2c2c2a" font-style="italic">매출 ·</text>
+            <text x="120" y="152" text-anchor="middle" font-family="Iowan Old Style, Georgia, serif" font-size="13" fill="#2c2c2a" font-style="italic">채용 성공률 ·</text>
+            <text x="120" y="174" text-anchor="middle" font-family="Iowan Old Style, Georgia, serif" font-size="13" fill="#2c2c2a" font-style="italic">고객 만족도</text>
+
+            <text x="380" y="38" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#5a5a56" letter-spacing="0.22em">SAME WORD</text>
+            <rect x="320" y="120" width="120" height="60" fill="#111" />
+            <text x="380" y="158" text-anchor="middle" font-family="Iowan Old Style, Georgia, serif" font-size="28" fill="#f4f1e9" letter-spacing="-0.01em">성과</text>
+
+            <text x="640" y="38" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#5a5a56" letter-spacing="0.22em">MODEL</text>
+            <circle cx="640" cy="150" r="78" fill="none" stroke="#111" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <text x="640" y="125" text-anchor="middle" font-family="Iowan Old Style, Georgia, serif" font-size="13" fill="#2c2c2a" font-style="italic">학습 속도 ·</text>
+            <text x="640" y="147" text-anchor="middle" font-family="Iowan Old Style, Georgia, serif" font-size="13" fill="#2c2c2a" font-style="italic">출시 속도 ·</text>
+            <text x="640" y="169" text-anchor="middle" font-family="Iowan Old Style, Georgia, serif" font-size="13" fill="#2c2c2a" font-style="italic">팀 분위기</text>
+
+            <line x1="198" y1="150" x2="318" y2="150" stroke="#111" stroke-width="0.8"/>
+            <line x1="442" y1="150" x2="562" y2="150" stroke="#111" stroke-width="0.8"/>
+            <text x="380" y="240" text-anchor="middle" font-family="ui-monospace, monospace" font-size="10" fill="#8a877f" letter-spacing="0.16em">두 영역은 같은 단어를 매개로 만나지만, 겹치지 않는다.</text>
+          </svg>
+        </div>
+    </main>
+    <div class="foot"><span>Same word, different ontology</span><span>06</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Socratic Extraction</span><span>4단계 루프</span></div>
+    <main>
+      <h2>의미를 닫는 네 단계</h2>
+      <div class="table">
+        <div class="key">/wonder</div><div>단어 안 의미 후보를 <strong>펼친다</strong> (아직 좁히지 않음)</div>
+        <div class="key">/reflect</div><div>사람·모델의 의미 <strong>차이를 마주 본다</strong></div>
+        <div class="key">/refine</div><div>차이를 <strong>같은 의미 한 줄</strong>(shared meaning)로 합친다</div>
+        <div class="key">/restate</div><div>shared meaning으로 goal을 <strong>재진술</strong>한다</div>
+      </div>
+      <p class="small"><strong>/socrates</strong>가 4단계를 Ralph 루프로 묶고, 매 사이클 끝 Seed Gate에서 세 칸이 다 찼는지 점검 → 비면 다음 사이클 (<code>Cycle &gt; 5</code>는 안전밸브).</p>
+    </main>
+    <div class="foot"><span>Wonder · Reflect · Refine · Restate</span><span>07</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Refining intent</span><span>보조 컴포넌트</span></div>
+    <main>
+      <h2>의도를 정련하는 장치</h2>
+      <div class="grid three">
+        <div class="card"><h3>/evolve-step</h3><p>한 번 모인 Seed는 "한 시야 안의 한 점". 사각지대(놓친 사용자 3 + 잘려나간 가능성 3)를 다시 묻되 <strong>사용자가 ☑한 것만</strong> v2에 반영.</p></div>
+        <div class="card"><h3>/ontology</h3><p>goal이라는 단어의 <strong>경계(boundary)</strong>를 정한다 — idea / boundary / properties×3.</p></div>
+        <div class="card"><h3>Stop Rule</h3><p>직전·신규 Seed의 ontology <strong>유사도 ≥ 0.85면 수렴(stop)</strong>. 무한 루프를 막는 정량적 종료 조건.</p></div>
+      </div>
+      <p class="small">산출물 = <strong>Seed</strong> (goal · constraints · acceptance_criteria) — 이것이 Part 2의 입력이 된다.</p>
+    </main>
+    <div class="foot"><span>Blind spot · boundary · stop</span><span>08</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Part 2</span><span>Execution Layer</span></div>
+    <main>
+      <div class="kicker">Part 2 · 실행을 닫는다</div>
+      <h2>닫힌 Seed를 신뢰성 있게<br><span class="accent">실행·검증</span>한다</h2>
+      <p class="lead">하네스 없음: 코드 작성 → 테스트 깨짐 → "다 됐다" 선언 → 사람이 수동 수정.<br>하네스 있음: 지시 읽기 → 검증 실행 → progress 갱신 → 사람은 리뷰만.</p>
+    </main>
+    <div class="foot"><span>Close the execution</span><span>09</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Walking Labs</span><span>repo 파일·관습 기반</span></div>
+    <main>
+      <h2>실행 하네스의 5+1 서브시스템</h2>
+      <div class="grid three">
+        <div class="card"><h3>Instructions</h3><p>AGENTS.md/CLAUDE.md로 경계를 박는다. 거대한 단일 파일 대신 역할·모듈별 점진적 지시.</p></div>
+        <div class="card"><h3>State (SoR)</h3><p>progress·feature_list·git에 상태를 영속. 휘발성 컨텍스트 밖에 두어 멀티 세션 연속성 확보.</p></div>
+        <div class="card"><h3>Verification</h3><p>내장 E2E 테스트로 성급한 완료 선언을 막는다. 검증 루프 없으면 "미충족" 피드백 자체가 없다.</p></div>
+        <div class="card"><h3>Scope</h3><p>한 번에 한 기능 + 명시적 "done". 과도하게 손대고 끝맺지 못하는 것을 막는다.</p></div>
+        <div class="card"><h3>Session Lifecycle</h3><p>초기화는 별도 단계. 모든 세션은 clean state로 끝나야 다음 세션이 이어받는다.</p></div>
+        <div class="card"><h3>(+) Observability</h3><p>런타임을 디버깅·관측 가능하게. 하네스 안에 속한다.</p></div>
+      </div>
+    </main>
+    <div class="foot"><span>File-based harness</span><span>10</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Ouroboros / AgentOS</span><span>계약을 강제하는 런타임</span></div>
+    <main>
+      <h2>하네스를 네 겹으로 본다</h2>
+      <div class="grid two">
+        <div class="card"><h3>Intent</h3><p>사람의 의도·책임 경계·성공 조건을 먼저 고정 (이 층이 Part 1).</p></div>
+        <div class="card"><h3>Control</h3><p>도구·순서·권한·중단 조건으로 모델의 선택면을 줄인다.</p></div>
+        <div class="card"><h3>Playground</h3><p>비개발자도 tool call로 안전하게 실행하는 작업장.</p></div>
+        <div class="card"><h3>Contract</h3><p>AgentOS가 검증할 수 있는 Seed·AC·event·memory. 결과를 고정하는 핵심 층.</p></div>
+      </div>
+      <p class="small">AgentOS가 Seed를 입력으로 실행하고 Contract로 검증 — 완료를 <code>AC pass / regression / rollback</code>로 정량화, 통과 못 하면 롤백.</p>
+    </main>
+    <div class="foot"><span>Four layers + runtime</span><span>11</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Skill vs MCP</span><span>모델 독립성</span></div>
+    <main class="split">
+      <div>
+        <h2>Skill은 모델에게 말한다.<br>MCP는 <span class="accent">환경을 고정</span>한다.</h2>
+        <p class="lead">Fat skill이면 모델 교체 시 흔들리지만, Contract 기반 AgentOS면 모델 교체는 런타임 변경에 불과하다 — 폐쇄망에서 갈아끼워도 계약·검증이 유지된다.</p>
+      </div>
+      <div class="diagram">
+        <div class="flow">
+          <div class="node">Skill = Pass by Value<span>절차·판단법을 입력으로 전달</span></div>
+          <div class="arrow">↓</div>
+          <div class="node">MCP = Pass by Reference<span>도구·상태·권한·포맷을 계약으로 노출</span></div>
+        </div>
+      </div>
+    </main>
+    <div class="foot"><span>Keep invariants outside model</span><span>12</span></div>
+  </section>
+
+  <section class="slide shared">
+    <div class="top"><span>Two approaches</span><span>같은 Part 2, 다른 구현</span></div>
+    <main>
+      <h2 class="heading">실행을 닫는<br>두 갈래.</h2>
+        <p class="lede">repo 파일·관습으로 모델에게 "말하는" Walking Labs와, 런타임이 계약을 "강제하는" Ouroboros/AgentOS. 같은 축(Skill ↔ MCP)의 양 끝이다.</p>
+
+        <div class="compare-grid">
+          <div class="compare-cell">
+            <div class="head">Walking Labs</div>
+            <div class="row"><span class="k">기반</span><span class="v">repo 파일·관습</span></div>
+            <div class="row"><span class="k">계약</span><span class="v">모델에게 "말한다"</span></div>
+            <div class="row"><span class="k">강제력</span><span class="v">약 — 안 따르면 샘</span></div>
+            <div class="row"><span class="k">모델 교체</span><span class="v">흔들릴 수 있음</span></div>
+            <div class="row"><span class="k">도입 비용</span><span class="v">낮음 · 투명</span></div>
+            <div class="row"><span class="k">지향</span><span class="v">범용 · 교육</span></div>
+          </div>
+          <div class="cmp-arrow">
+            choose by<br>
+            <span class="score">need</span>
+            <span class="verdict">강제력·거버넌스 ↔ 속도·투명성</span>
+          </div>
+          <div class="compare-cell">
+            <div class="head">Ouroboros / AgentOS</div>
+            <div class="row"><span class="k">기반</span><span class="v">런타임·플랫폼</span></div>
+            <div class="row"><span class="k">계약</span><span class="v">시스템이 "고정한다"</span></div>
+            <div class="row"><span class="k">강제력</span><span class="v">강 — 시스템이 검증·차단</span></div>
+            <div class="row"><span class="k">모델 교체</span><span class="v">강건 — 런타임만 교체</span></div>
+            <div class="row"><span class="k">도입 비용</span><span class="v">높음 · 런타임 필요</span></div>
+            <div class="row"><span class="k">지향</span><span class="v">사내 · 폐쇄망 거버넌스</span></div>
+          </div>
+        </div>
+    </main>
+    <div class="foot"><span>Walking Labs vs AgentOS</span><span>13</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Upside</span><span>scenario1 실증</span></div>
+    <main>
+      <h2>하네스가 확실히 효과 본 것</h2>
+      <div class="grid three">
+        <div class="card"><h3>지시 비용 급감</h3><p>진입점(Agent.md)에 세션 시작/종료·규약을 정돈하니 "Agent.md 읽고 준비해" 한마디로 충분해졌다.</p></div>
+        <div class="card"><h3>커밋 시점 검증</h3><p>pre-commit 훅 자동 테스트가 확실히 효과적 — 검증이 커밋에 박힌다.</p></div>
+        <div class="card"><h3>연속성 + 완료 게이트</h3><p>상태가 repo(SoR)에 남아 세션이 끊겨도 이어지고, 성급한 완료 선언을 차단.</p></div>
+      </div>
+      <p class="small">→ 위 모두가 "사람이 매번 안 봐도 되게" 만드는 방향 = <strong>감시 비용↓</strong>.</p>
+    </main>
+    <div class="foot"><span>Delegation that holds</span><span>14</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Failure modes</span><span>안티패턴</span></div>
+    <main>
+      <h2>하네스가 실패하는 법</h2>
+      <div class="grid three">
+        <div class="card"><h3>기준 과잉</h3><p>모든 판단을 문서화하려다 실행 속도가 사라짐. 하네스는 문서 양이 아니라 제어할 위험의 크기에 맞춘다.</p></div>
+        <div class="card"><h3>검증 부재</h3><p>좋은 말만 있고 통과 조건(AC)이 없음. mock 자기검증으로 "됐다"고 판단.</p></div>
+        <div class="card"><h3 class="accent">동명 가짜 🔴</h3><p>intent를 안 닫아 이름만 같은 것을 진짜로 착각 — "정확히 잘못된 것을 신뢰성 있게" 만든다. Part 1 부재의 대표 실패.</p></div>
+      </div>
+      <p class="small">그 밖에: 소유자 부재(낡은 규칙 잔존), 메타 중복(진실 소스가 둘 이상).</p>
+    </main>
+    <div class="foot"><span>Right-sized harness</span><span>15</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Lesson · Intent</span><span>가장 비싼 실패</span></div>
+    <main>
+      <div class="quote">이름이 HERMES인 게 동작했지만,<br>아무도 <span class="accent">실존 서비스인가</span>를 묻지 않았다.</div>
+      <p class="lead">scenario1에서 원한 건 실존 HERMES Agent였는데, intent를 닫지 않아 모델이 동명의 커스텀 LLM을 만들었다. 풍부한 배경 컨텍스트가 오히려 오해를 강화했다(Context≠Contract). → AC에 정체성 계약 + 보유 자산을 assets.json으로 하네스에 인지시킨다.</p>
+    </main>
+    <div class="foot"><span>L-I1 · close intent as contract</span><span>16</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Lessons</span><span>나머지 다섯 면</span></div>
+    <main>
+      <h2>Part 2를 단단히 하는 교훈</h2>
+      <div class="grid three">
+        <div class="card"><h3>State</h3><p>상태 소스는 하나 — dev-features를 폐기하고 모듈별 feature-list 하나만 단일 진실. 진입에서 필요한 전부로 팬아웃을 닫아라.</p></div>
+        <div class="card"><h3>Verification</h3><p>완료 판정은 사람만, 검증은 실 LLM 작동으로. mockup·스크립트 재생이 아니다 — "실제 응답을 처리 못 한다"가 가치.</p></div>
+        <div class="card"><h3>Scope / 병렬</h3><p>병렬은 메타 파일 공유로 쉽게 직렬로 무너진다. 브랜치 격리 → 권한 확대가 해법.</p></div>
+        <div class="card"><h3>Lifecycle</h3><p>핸드오프는 정규 파일에만, NEXT_SESSION 같은 임시 파일 금지. 세션은 clean state로 끝낸다.</p></div>
+        <div class="card"><h3>Observability</h3><p>"옛 동작 보임" → 코드 가설 전에 ① 서버 재기동 ② 정적 JS 캐시부터. 라이브 reproduce가 가설보다 빠르다.</p></div>
+        <div class="card"><h3>Observability ②</h3><p>세션 컨텍스트 예산·산출물 사용이 안 보인다 — 표면화해야 할 미해결 과제.</p></div>
+      </div>
+    </main>
+    <div class="foot"><span>State · Verify · Scope · Lifecycle · Observe</span><span>17</span></div>
+  </section>
+
+  <section class="slide">
+    <div class="top"><span>Checklist</span><span>하네스 한 벌의 9개 면</span></div>
+    <main>
+      <h2>만들 때 점검할 9개 면</h2>
+      <div class="grid three">
+        <div class="card"><h3>Intent</h3><p>무엇을 시킬지(goal·경계·성공 조건)를 닫았나</p></div>
+        <div class="card"><h3>Control</h3><p>도구·순서·권한·중단 조건으로 선택면을 줄였나</p></div>
+        <div class="card"><h3>Instructions</h3><p>지시가 모듈별로 쪼개졌나 (단일 거대 파일 X)</p></div>
+        <div class="card"><h3>State (SoR)</h3><p>상태가 repo에 영속되나 (컨텍스트 밖, 단일 진실)</p></div>
+        <div class="card"><h3>Scope</h3><p>한 번에 한 기능 + 명시적 done이 있나</p></div>
+        <div class="card"><h3>Lifecycle</h3><p>초기화가 별도 단계이고 매 세션이 clean state로 끝나나</p></div>
+        <div class="card"><h3>Verification</h3><p>완료 주장을 실 증거로 검증하나 (E2E, 사람 판정)</p></div>
+        <div class="card"><h3>Observability</h3><p>런타임·컨텍스트 예산·산출물 사용을 관측하나</p></div>
+        <div class="card"><h3>Contract</h3><p>모델이 바뀌어도 유지되는 계약인가</p></div>
+      </div>
+    </main>
+    <div class="foot"><span>Nine faces of a harness</span><span>18</span></div>
+  </section>
+
+  <section class="slide shared closing">
+    <div class="top"><span>Closing</span><span>Takeaway</span></div>
+    <main>
+      <h2>하네스 엔지니어링의 기준</h2>
+      <div class="grid three">
+        <div class="card"><h3>앞단 — 의도</h3><p>무엇을 시킬지를 실행 전에 계약으로 닫았는가.</p></div>
+        <div class="card"><h3>뒷단 — 실행</h3><p>완료 주장을 실 증거로 검증할 수 있는가.</p></div>
+        <div class="card"><h3>팀 — 복제</h3><p>한 사람의 감각이 팀 표준으로 전달되는가.</p></div>
+      </div>
+      <p class="lead">결정론적 제어 = 자유도 제거가 아니라, 필요한 선택만 남기는 설계.</p>
+    </main>
+    <div class="foot"><span>Keep only the choices that matter</span><span>19</span></div>
+  </section>
+</div>
+<div class="progress" id="progress"></div>
+<div class="nav"><button id="prev">Prev</button><button id="next">Next</button></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let index=0;
+function show(n){
+  index=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,i)=>s.classList.toggle('active',i===index));
+  document.getElementById('progress').style.width=((index+1)/slides.length*100)+'%';
+}
+document.getElementById('prev').onclick=()=>show(index-1);
+document.getElementById('next').onclick=()=>show(index+1);
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(index+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')show(index-1);
+  if(e.key==='Home')show(0);
+  if(e.key==='End')show(slides.length-1);
+});
+show(0);
+</script>
+</body>
+</html>

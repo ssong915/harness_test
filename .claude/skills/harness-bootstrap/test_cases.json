@@ -1,0 +1,29 @@
+{
+  "eval_cases": [
+    {
+      "query": "세션 시작했어, 어디까지 했는지 보고 이어서 하자",
+      "should_trigger": true,
+      "expected_behavior": "deps.json.read_order로 컨텍스트를 읽고, 브랜치를 점검하고, handoff.md 상태를 복원해 보고한다."
+    },
+    {
+      "query": "/harness (repo에 AGENTS.md + feature-list.json 존재, 세션 첫 진입)",
+      "should_trigger": true,
+      "expected_behavior": "harness 오케스트레이터가 P0로 이 스킬을 호출. read_order 팬아웃 + 브랜치 가드."
+    },
+    {
+      "query": "AGENTS.local.md 가 아직 없는 상태로 시작",
+      "should_trigger": true,
+      "expected_behavior": "아무것도 읽지 말고 'cp AGENTS.local.md.template AGENTS.local.md' 셋업 안내 후 중단. 추측 진행 금지."
+    },
+    {
+      "query": "이 모호한 요청을 Seed로 닫아줘",
+      "should_trigger": false,
+      "expected_behavior": "라우팅 → socrates (intent 닫기는 부트스트랩이 아님)."
+    },
+    {
+      "query": "다음 기능 작업 시작할게",
+      "should_trigger": false,
+      "expected_behavior": "라우팅 → harness-feature (기능 선택/브랜치는 P2)."
+    }
+  ]
+}

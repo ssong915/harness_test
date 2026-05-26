@@ -1,0 +1,23 @@
+{
+  "_comment": "하네스 파일 간 의존성 + 읽기 순서. [L-S2] 단일 진입점에서 팬아웃을 기계가 전개하도록. 한 파일을 고치면 edges로 함께 갱신할 파일을 찾는다.",
+  "read_order": [
+    "AGENTS.md",
+    "AGENTS.local.md",
+    "SEED.md",
+    "assets.json",
+    "feature-list.json",
+    "verification.json",
+    "progress.md",
+    "handoff.md",
+    "reliability.md",
+    "clean-state-checklist.md"
+  ],
+  "edges": [
+    { "from": "feature-list.json", "to": ["progress.md"], "rule": "기능 status가 바뀌면 progress.md에 체크포인트를 남긴다" },
+    { "from": "feature-list.json", "to": ["handoff.md"], "rule": "인터페이스/경계에 영향 주는 기능이면 handoff.md도 갱신" },
+    { "from": "feature-list.json", "to": ["verification.json"], "rule": "기능이 속한 모듈의 검증 시나리오가 verification.json에 있어야 한다" },
+    { "from": "SEED.md", "to": ["assets.json"], "rule": "SEED의 고유명은 assets.json의 실존 자산과 대조 [L-I1]" },
+    { "from": "SEED.md", "to": ["feature-list.json"], "rule": "Seed가 닫힌 뒤에야 feature 개발 시작 [L-I2]" }
+  ],
+  "stale_policy": "기능이 done으로 바뀌면, 그 기능을 미완으로 적은 옛 기록(progress/handoff 내)을 정리한다. 중복·stale은 충돌·환각을 유발한다 [L-S1, L-L1]."
+}

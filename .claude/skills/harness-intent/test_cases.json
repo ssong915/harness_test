@@ -1,0 +1,29 @@
+{
+  "eval_cases": [
+    {
+      "query": "뭘 만들지 확정하고 SEED 닫자",
+      "should_trigger": true,
+      "expected_behavior": "socrates로 Seed 생성·확인 후 SEED.md로 브리지, 고유명을 assets.json과 대조, Intent Gate 점검."
+    },
+    {
+      "query": "HERMES Agent 연동 기능을 만들 거야",
+      "should_trigger": true,
+      "expected_behavior": "고유명 'HERMES Agent'를 assets.json과 대조. 실존이면 그 자산 사용·동명 가짜 금지 AC 추가, 없으면 신규/등록을 사람에게 확인."
+    },
+    {
+      "query": "만든 게 물어보면 자기가 HERMES라고 답하니까 맞는 거지?",
+      "should_trigger": true,
+      "expected_behavior": "자칭은 통과 근거 아님(L-I1/Q11-12). assets.json의 ref 도달·use 절차 등 실존 연결 증거를 요구. 자칭만으론 Intent Gate 불통과."
+    },
+    {
+      "query": "이 단어가 또 무슨 뜻일 수 있는지 펼쳐줘",
+      "should_trigger": false,
+      "expected_behavior": "라우팅 → wonder/socrates (의미 확장 자체는 Symposium의 일)."
+    },
+    {
+      "query": "SEED 다 닫혔으니 기능 고르자",
+      "should_trigger": false,
+      "expected_behavior": "라우팅 → harness-feature (P2)."
+    }
+  ]
+}

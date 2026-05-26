@@ -1,0 +1,24 @@
+{
+  "eval_cases": [
+    {
+      "query": "다음 기능 작업 시작할게",
+      "should_trigger": true,
+      "expected_behavior": "feature-list.json에서 의존 해소된 todo 하나를 고르고, 기능 브랜치를 떼고, in_progress로 표시 + progress 체크포인트."
+    },
+    {
+      "query": "이거 두 개 같이 작업하면 안 될까",
+      "should_trigger": true,
+      "expected_behavior": "한 번에 하나 원칙을 지키도록 정확히 하나만 고르게 안내(나머지는 다음 세션)."
+    },
+    {
+      "query": "아직 뭘 만들지 정확히 안 정했는데 일단 코딩 시작하자",
+      "should_trigger": false,
+      "expected_behavior": "Seed 미닫힘 → socrates(Intent Gate)로 라우팅. 개발 시작 금지."
+    },
+    {
+      "query": "방금 만든 기능 검증해줘",
+      "should_trigger": false,
+      "expected_behavior": "라우팅 → harness-verify (P4)."
+    }
+  ]
+}
