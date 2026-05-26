@@ -26,7 +26,7 @@
     },
     {
       "module": "router",
-      "unit": "브라우저 콘솔에서 router.classify(input) 호출 — 입력별 결과를 수동 확인. 자동화는 없음(단일 HTML 데모 제약).",
+      "unit": "node router.test.mjs",
       "e2e": {
         "when": "F-002, F-003, F-004 모두 done 시점",
         "scenario": [
