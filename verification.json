@@ -21,7 +21,7 @@
           "carcenters.json + hospitals.json 모두 valid JSON이고, 각 구마다 3개 이상의 항목이 존재.",
           "각 항목에 이름·평점·전화번호·주소·gps(lat/lng) 필드가 모두 있다."
         ],
-        "verified_by_human": false
+        "verified_by_human": true
       }
     },
     {
