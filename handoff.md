@@ -4,13 +4,27 @@
 > 인터페이스/경계에 영향이 있을 때 갱신(harness P5).
 
 ## 지금 상태 (한 문단)
-F-001 한 사이클 완주 + main에 머지 완료. P7 close 정상 종료. main 깨끗 (working tree clean), `feat/F-001` 삭제됨. 다음 세션은 P0 부트스트랩 → 곧바로 P2 (F-002 선택)부터 시작.
+F-001(data) + F-002(router/intent 분류기) 두 사이클 완주, 둘 다 main에 머지됨. router.js + router.test.mjs 추가, node 9/9 PASS. 다음은 F-003(모호 fallback) — 다만 F-003 부터는 **DOM/HTML 의존**이 시작되는데 베이스 mockup HTML(`accident-response-demo-mockup.html`)이 이 repo에 없음 → 다음 세션 진입 전 결정 필요.
 
 ## 다음 세션이 할 일
-1. `bash scripts/new-feature.sh F-002` 로 브랜치 분리 → feature-list.json에서 F-002 status=in_progress, evidence.branch 기입.
-2. F-002 intent 분류기 구현 — 입력 문자열 includes 매칭으로 `accident` / `trouble` / `ambiguous` 셋 중 하나 반환. 키워드: `사고`/`박았어`/`충돌` → accident, `시동`/`펑크`/`견인` → trouble, 매칭 없음 → ambiguous.
-3. F-003 (모호 fallback Alert with list) + F-004 (라우팅 배지 가시화)까지 router 모듈 전체를 마무리하면 router 모듈 e2e 검증 시점이 옴 (verification.json#modules.router 참조).
-4. router 모듈이 완성되면 F-005 (accident-flow extract) + F-007 (trouble-flow 구현) 의 의존성이 풀려 병렬로 진행 가능.
+1. **선결**: SEED constraints의 베이스 mockup HTML 처리 — (a) 외부에서 파일 가져와 repo에 추가, (b) SEED를 "처음부터 자체 mockup HTML 구축"으로 갱신. 결정 안 되면 F-003 진입 불가.
+2. 결정 후 `bash scripts/new-feature.sh F-003` → 모호 fallback (Alert with list 분기 질문) 구현.
+3. F-004 (라우팅 결과 배지/라벨)까지 끝나면 router 모듈 e2e 검증 시점.
+4. router 모듈 완성 → F-005 (accident-flow extract) + F-007 (trouble-flow 구현) 의존 해소.
+
+## 열린 결정 / 막힌 것 (blocked)
+- **베이스 mockup HTML 누락** [L-I1]: SEED에 "기존 mockup 확장"으로 명시했으나 파일이 repo에 없음. F-003 이후 작업의 선결 조건. (a) 외부 첨부, (b) SEED 갱신 중 선택 필요.
+
+## 인터페이스 변경 (다른 모듈에 영향)
+- **`router.js` 인터페이스 확정** (이번 세션):
+  - `import { classify, KEYWORDS } from './router.js'`
+  - `classify(input: string): 'accident' | 'trouble' | 'ambiguous'`
+  - `KEYWORDS = { accident: [...], trouble: [...] }` (확장 가능한 키워드 풀)
+- 영향 모듈: 모든 후속 router/flow 기능이 이 함수를 진입점으로 사용.
+- **`carcenters.json` / `hospitals.json` 스키마** (이전 세션 유지):
+  - 키: 서울 구 이름 → 항목 배열.
+  - 항목 필드: `name` / `rating` / `phone` / `address` / `gps.{lat,lng}`.
+  - hospitals만: `kind` ∈ {`GH`, `MC`, `IM`, `OC`, `UN`, `ER`}.
 
 ## 열린 결정 / 막힌 것 (blocked)
 - 없음.
