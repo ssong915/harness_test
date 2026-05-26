@@ -4,12 +4,13 @@
 > 인터페이스/경계에 영향이 있을 때 갱신(harness P5).
 
 ## 지금 상태 (한 문단)
-P1 Intent Gate 통과(Seed 닫힘), P2 첫 기능 F-001 선택·격리, P3 carcenters.json + hospitals.json 생성, P4 사람 검증 통과, P5+P6 기록·커밋 직전. 브랜치 `feat/F-001` 위에 있음. 다음은 main으로 머지 + 두 번째 기능 선택(F-002 intent 분류기 권장).
+F-001 한 사이클 완주 + main에 머지 완료. P7 close 정상 종료. main 깨끗 (working tree clean), `feat/F-001` 삭제됨. 다음 세션은 P0 부트스트랩 → 곧바로 P2 (F-002 선택)부터 시작.
 
 ## 다음 세션이 할 일
-1. 이 세션의 F-001 커밋을 main에 머지하고 `feat/F-001` 브랜치 삭제 (P6 마무리).
-2. F-002 (router/intent 분류기) 선택 → `scripts/new-feature.sh F-002` 로 브랜치 분리 → P3 개발 진입.
-3. F-002·F-003·F-004 가 끝나면 router 모듈 e2e 검증 시점 — F-005 (accident-flow extract) 와 F-007 (trouble-flow 구현) 의존성 모두 해소.
+1. `bash scripts/new-feature.sh F-002` 로 브랜치 분리 → feature-list.json에서 F-002 status=in_progress, evidence.branch 기입.
+2. F-002 intent 분류기 구현 — 입력 문자열 includes 매칭으로 `accident` / `trouble` / `ambiguous` 셋 중 하나 반환. 키워드: `사고`/`박았어`/`충돌` → accident, `시동`/`펑크`/`견인` → trouble, 매칭 없음 → ambiguous.
+3. F-003 (모호 fallback Alert with list) + F-004 (라우팅 배지 가시화)까지 router 모듈 전체를 마무리하면 router 모듈 e2e 검증 시점이 옴 (verification.json#modules.router 참조).
+4. router 모듈이 완성되면 F-005 (accident-flow extract) + F-007 (trouble-flow 구현) 의 의존성이 풀려 병렬로 진행 가능.
 
 ## 열린 결정 / 막힌 것 (blocked)
 - 없음.
@@ -22,4 +23,4 @@ P1 Intent Gate 통과(Seed 닫힘), P2 첫 기능 F-001 선택·격리, P3 carce
 - 영향 모듈: `router` (F-007 trouble-flow가 이 스키마를 직접 읽음), `accident-flow` (F-005가 기존 mockup 추천 로직을 이 스키마로 갈아끼울 수 있음).
 
 ## 현재 브랜치
-- `feat/F-001` (기능=브랜치=세션 1:1, 머지 후 삭제 [L-P2])
+- `main` (feat/F-001은 머지 후 삭제 완료). 다음 기능은 새 `feat/F-002` 브랜치를 떼서 시작.
