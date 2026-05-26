@@ -11,7 +11,7 @@
       "status": "done",
       "depends_on": [],
       "e2e_verified": true,
-      "evidence": { "commit": "<pending — 이 커밋에 채움>", "test_file": "verification.json#modules.data.unit", "branch": "feat/F-001" },
+      "evidence": { "commit": "1ca1e39", "test_file": "verification.json#modules.data.unit", "branch": "feat/F-001" },
       "notes": "carcenters.json + hospitals.json. 각 구마다 3개 (총 75+75=150 entries). 필드: 이름·평점·전화번호·주소·gps(lat/lng). hospitals에 kind 필드 추가(GH/MC/IM/OC/UN/ER) — SEED 명시 외 확장이나 verification에는 영향 없음."
     },
     {
