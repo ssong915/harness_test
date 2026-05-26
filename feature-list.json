@@ -18,11 +18,11 @@
       "id": "F-002",
       "title": "intent 분류기 — 입력 문자열을 사고/트러블/모호 3-way 로 분기",
       "module": "router",
-      "status": "todo",
+      "status": "done",
       "depends_on": [],
-      "e2e_verified": false,
-      "evidence": { "commit": null, "test_file": null, "branch": null },
-      "notes": "사고 키워드(사고/박았어/충돌), 트러블 키워드(시동/펑크/견인), 매칭 없으면 ambiguous. 키워드 부분 일치(includes)."
+      "e2e_verified": true,
+      "evidence": { "commit": "<pending>", "test_file": "router.test.mjs", "branch": "feat/F-002" },
+      "notes": "router.js + router.test.mjs (9/9 PASS). 모듈 e2e는 F-003+F-004 done 시점으로 보류 (verification.json#modules.router 참조)."
     },
     {
       "id": "F-003",

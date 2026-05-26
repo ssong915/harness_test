@@ -7,6 +7,7 @@
 
 ## 로그
 <!-- 최신이 위로 -->
+- 2026-05-26 | F-002 | (P2→P3→P4→P5) feat/F-002 분리 → router.js (classify 3-way) + router.test.mjs (9 cases) 작성. node 유닛 9/9 PASS. 사람이 e2e_verified=true 마킹. verification.json router unit을 'node router.test.mjs'로 보강(기존 '수동 확인' 대체). 모듈 e2e는 F-003+F-004 done 시점으로 보류. | 갱신: router.js·router.test.mjs(신규), feature-list.json(F-002 done), verification.json(router unit 보강), progress.md | unit PASS, 모듈 e2e 보류 | feat(router): F-002 ... (다음 커밋)
 - 2026-05-26 | F-001 | (P7 close) feat/F-001을 main에 --no-ff 머지 후 브랜치 삭제. 작업트리 clean. handoff.md를 main 기준·F-002 시작 안내로 갱신. clean-state-checklist 7/7 충족. | 갱신: handoff.md, progress.md | N/A | merge: F-001 ... (64842b1)
 - 2026-05-26 | F-001 | (P3→P4→P5→P6) 결정론적 Python 생성기로 carcenters.json + hospitals.json (각 25구×3=75 entries) 작성. node 유닛 체크 PASS. 사람이 e2e_verified=true 마킹. handoff.md에 스키마 인터페이스 기록. evidence.commit 백필. | 갱신: carcenters.json·hospitals.json(신규), feature-list.json(F-001 done + commit), verification.json(data verified_by_human=true), handoff.md, progress.md | unit PASS, e2e PASS (사람 마킹) | feat(data): F-001 (1ca1e39) + chore(F-001) backfill (a8c1650)
 - 2026-05-26 | F-001 | (P2 start) F-001 선택 → feat/F-001 브랜치 분리 → in_progress 마킹. P3 개발 진입 준비. | 갱신: feature-list.json(F-001 status/branch), progress.md | 검증 보류 (P4) | 미커밋
