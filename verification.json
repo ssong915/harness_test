@@ -1,10 +1,10 @@
 {
   "_comment": "검증 기준 [L-V2]. feature-list.json과 분리(관심사 분리). 기능 단위는 unit, 모듈 단위는 완성 타이밍에 한 번에 e2e. '매 세션 검증' 부담을 없앤다.",
   "system": {
-    "_comment": "전체 시스템 차원의 검증 기준. happy-path 3종이 실제 브라우저에서 끝까지 동작해야 한다 [L-V2].",
+    "_comment": "전체 시스템 차원의 검증 기준. happy-path 3종이 실제 브라우저에서 끝까지 동작해야 한다 [L-V2]. SEED v2 — demo.html 자체 신규 구축.",
     "criteria": [
-      "브라우저에서 accident-response-demo-mockup.html(또는 후속 버전 파일)을 열면 의존성 설치 없이 즉시 로드된다.",
-      "채팅에 '사고났어' 입력 → 사고 응대 8단계가 끝까지 진행된다 (사고 시나리오 회귀 없음).",
+      "브라우저에서 demo.html을 열면 의존성 설치 없이 즉시 로드된다 (carcenters.json + hospitals.json + router.js 동적 import).",
+      "채팅에 '사고났어' 입력 → 사고 응대 8단계가 끝까지 진행된다.",
       "채팅에 '시동이 안 걸려' 입력 → 차량 트러블 5단계가 끝까지 진행되고, 카센터 추천 화면에 dummy JSON의 항목 3개 이상이 노출된다.",
       "채팅에 '도와줘' 입력 → Alert with list 분기 질문이 뜨고, 사용자 선택에 따라 두 흐름 중 하나로 진입한다.",
       "각 흐름 진행 중 라우팅 배지/라벨(accident / trouble / ambiguous→accident 등)이 화면에 보인다.",
@@ -22,6 +22,22 @@
           "각 항목에 이름·평점·전화번호·주소·gps(lat/lng) 필드가 모두 있다."
         ],
         "verified_by_human": true
+      }
+    },
+    {
+      "module": "ui-shell",
+      "unit": "브라우저에서 demo.html 직접 열어 시각 확인 (자동 unit 없음, 단일 HTML 데모 제약).",
+      "e2e": {
+        "when": "F-008 done 시점",
+        "scenario": [
+          "demo.html을 브라우저에서 열면 chat 입력란 + 우측 사이드 패널(컨텍스트) + 라우팅 결과 배지 영역이 보인다.",
+          "'사고났어' 입력 → 배지에 'accident' 표시 + 임시 응답 노출.",
+          "'펑크' 입력 → 배지에 'trouble' 표시 + 임시 응답 노출.",
+          "'도와줘' 입력 → 배지에 'ambiguous' 표시 + (F-003 도착 전 임시) 안내 텍스트.",
+          "Alert / List / Alert with list 3종 컴포넌트 render 함수가 정의되어 있고 각각 콘솔에서 호출 시 화면에 나타난다.",
+          "router.js를 외부 import로 사용 (인라인 재구현 없음 — assets.json scenario-router do_not 준수)."
+        ],
+        "verified_by_human": false
       }
     },
     {

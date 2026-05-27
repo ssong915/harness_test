@@ -1,29 +1,29 @@
 {
-  "_comment": "보유 자산 레지스트리 [L-I1]. 이미 가진 실물(도커 이미지·레포·서비스·API)을 등록해, 에이전트가 '새로 만들지 말고 이걸 써라'를 따르게 한다. SEED.md의 고유명은 여기와 대조한다. 이름만 같은 커스텀 구현을 막는 정체성 계약의 근거.",
+  "_comment": "보유 자산 레지스트리 [L-I1]. SEED v2에서 외부 mockup 파일 부재가 확인되어 hermes-mockup 자산은 '신규 구축'으로 전환됨. 동명의 외부 자산이 repo에 들어오면 다시 '실존'으로 재바인딩하고 SEED v3 검토.",
   "assets": [
     {
       "id": "hermes-mockup",
-      "name": "HERMES accident-response demo mockup",
-      "kind": "html-asset",
-      "ref": "accident-response-demo-mockup.html",
-      "use": "브라우저에서 직접 열어 사용. 이번 세션의 확장 대상 파일이다 (in-place 확장 또는 동일 폴더 내 후속 버전 파일로).",
-      "do_not": "이름만 같은 'HERMES'를 별도 파일로 새로 만들지 말 것. 기존 mockup의 사고 응대 8단계와 UI 컴포넌트(Alert/List/Alert with list)를 그대로 재사용한다."
+      "name": "HERMES accident-response demo mockup (자체 구축)",
+      "kind": "to-be-built",
+      "ref": "demo.html (F-008에서 신규 작성)",
+      "use": "demo.html 단일 파일에 chat UI + UI 컴포넌트 3종 + 사이드 컨텍스트 패널 + router.js 연동",
+      "do_not": "외부 동명 자산이 추후 들어오면 SEED v3로 재바인딩 후 이 자체 구축본을 폐기하거나 통합 검토 — 동명 가짜를 영구화하지 말 것 [L-I1]"
     },
     {
-      "id": "hermes-accident-pipeline",
-      "name": "accident-response-pipeline (HERMES 내장 skill)",
-      "kind": "skill-logic",
-      "ref": "accident-response-demo-mockup.html#accident-response-pipeline",
-      "use": "mockup HTML 내부에 정의된 사고 8단계 진행 로직. 재사용 — 재구현 금지.",
-      "do_not": "동일 책임의 별도 함수를 따로 만들지 말 것. 트러블 파이프라인은 명시적으로 다른 skill 이름(car-trouble-pipeline)으로 분리한다."
+      "id": "seoul-poi-data",
+      "name": "서울 구별 카센터·병원 dummy JSON",
+      "kind": "json-data",
+      "ref": "carcenters.json + hospitals.json (F-001 완료)",
+      "use": "fetch() 로 로드해서 GPS 근접 추천에 사용",
+      "do_not": "두 파일을 분리한 채로 유지 — 합치지 말 것 (관심사 분리)"
     },
     {
-      "id": "hermes-ui-router",
-      "name": "accident-ui-router (HERMES 내장 skill)",
-      "kind": "skill-logic",
-      "ref": "accident-response-demo-mockup.html#accident-ui-router",
-      "use": "mockup HTML 내부의 진입 라우팅 로직. 이번 세션에서 사고 외 분기까지 처리하도록 책임을 확장한다.",
-      "do_not": "동명의 새 라우터를 따로 만들지 말 것. 기존 router를 확장한다."
+      "id": "scenario-router",
+      "name": "router.js (intent 분류기)",
+      "kind": "js-module",
+      "ref": "router.js + router.test.mjs (F-002 완료)",
+      "use": "import { classify } from './router.js' — 입력 → 'accident' | 'trouble' | 'ambiguous'",
+      "do_not": "demo.html 내부에 동일 책임 함수를 인라인으로 재구현하지 말 것 — 외부 모듈 import 사용"
     }
   ]
 }

@@ -7,6 +7,7 @@
 
 ## 로그
 <!-- 최신이 위로 -->
+- 2026-05-27 | (P1' Intent Gate v2) | SEED constraints 무너짐 발견 — 외부 mockup HTML 부재 [L-I1, Context≠Contract]. SEED v2로 evolve: '자체 mockup 신규 구축'. assets.json 재작성(hermes-mockup → to-be-built, scenario-router/seoul-poi-data 추가). feature-list에 F-008(ui-shell) 추가, F-005 재정의, DOM 의존 기능들 depends_on에 F-008 추가. verification.json system 기준 + ui-shell 모듈 추가. | 갱신: SEED.md, assets.json, feature-list.json, verification.json, progress.md | 검증 N/A | (다음 커밋)
 - 2026-05-26 | F-002 | (P7 close) feat/F-002를 main에 --no-ff 머지 후 브랜치 삭제. handoff.md를 F-003 선결조건(베이스 mockup 누락 결정 필요) + router.js 인터페이스로 갱신. | 갱신: handoff.md, progress.md | N/A | merge: F-002 (23c0c2b)
 - 2026-05-26 | F-002 | (P2→P3→P4→P5→P6) feat/F-002 분리 → router.js (classify 3-way) + router.test.mjs (9 cases) 작성. node 유닛 9/9 PASS. 사람이 e2e_verified=true 마킹. verification.json router unit을 'node router.test.mjs'로 보강(기존 '수동 확인' 대체). 모듈 e2e는 F-003+F-004 done 시점으로 보류. evidence.commit 백필. | 갱신: router.js·router.test.mjs(신규), feature-list.json(F-002 done + commit), verification.json(router unit 보강), progress.md | unit PASS, 모듈 e2e 보류 | feat(router): F-002 (87cf0d0) + chore backfill (99746b9)
 - 2026-05-26 | F-001 | (P7 close) feat/F-001을 main에 --no-ff 머지 후 브랜치 삭제. 작업트리 clean. handoff.md를 main 기준·F-002 시작 안내로 갱신. clean-state-checklist 7/7 충족. | 갱신: handoff.md, progress.md | N/A | merge: F-001 ... (64842b1)
