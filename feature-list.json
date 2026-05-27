@@ -31,7 +31,7 @@
       "status": "done",
       "depends_on": ["F-002"],
       "e2e_verified": true,
-      "evidence": { "commit": "<pending>", "test_file": "verification.json#modules.ui-shell", "branch": "feat/F-008" },
+      "evidence": { "commit": "87ace6a", "test_file": "verification.json#modules.ui-shell", "branch": "feat/F-008" },
       "notes": "SEED v2 전환의 기반 — '기존 mockup 확장' 대신 자체 신규 구축. 단일 demo.html에 chat 입력란, Alert/List/Alert-with-list 3종 컴포넌트(render 함수), 우측 사이드 패널(사용자 컨텍스트 + 라우팅 결과 배지), router.js 동적 import. 입력하면 classify 결과를 배지에 표시 + 임시 plain text 응답(scenario별 흐름은 후속 F-003/F-005/F-007에서 채움)."
     },
     {
