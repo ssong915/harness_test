@@ -26,7 +26,7 @@
     },
     {
       "module": "ui-shell",
-      "unit": "브라우저에서 demo.html 직접 열어 시각 확인 (자동 unit 없음, 단일 HTML 데모 제약).",
+      "unit": "python3 verify_demo_structure.py (정적 구조 확인) + bash serve.sh 후 curl http://localhost:8000/{demo.html,router.js,carcenters.json,hospitals.json} 200 확인.",
       "e2e": {
         "when": "F-008 done 시점",
         "scenario": [
@@ -34,10 +34,10 @@
           "'사고났어' 입력 → 배지에 'accident' 표시 + 임시 응답 노출.",
           "'펑크' 입력 → 배지에 'trouble' 표시 + 임시 응답 노출.",
           "'도와줘' 입력 → 배지에 'ambiguous' 표시 + (F-003 도착 전 임시) 안내 텍스트.",
-          "Alert / List / Alert with list 3종 컴포넌트 render 함수가 정의되어 있고 각각 콘솔에서 호출 시 화면에 나타난다.",
+          "Alert / List / Alert with list 3종 컴포넌트 render 함수가 정의되어 있고 사이드 패널 버튼으로 호출 시 화면에 나타난다.",
           "router.js를 외부 import로 사용 (인라인 재구현 없음 — assets.json scenario-router do_not 준수)."
         ],
-        "verified_by_human": false
+        "verified_by_human": true
       }
     },
     {
